@@ -1,15 +1,33 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'io.franzbecker.gradle-lombok' version '1.14'
 }
 
+group 'com.github.mealsquad'
+mainClassName = 'com.github.mealsquad.Bot'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile 'junit:junit:4.12'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    // https://mvnrepository.com/artifact/com.typesafe/config
+    compile group: 'com.typesafe', name: 'config', version: '1.0.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
+    compile 'com.google.guava:guava:27.0.1-jre'
+    implementation 'org.javacord:javacord:3.0.1'
+}
+
+lombok { // optional: values below are the defaults
+    version = "1.16.20"
+    sha256 = "c5178b18caaa1a15e17b99ba5e4023d2de2ebc18b58cde0f5a04ca4b31c10e6d"
 }
