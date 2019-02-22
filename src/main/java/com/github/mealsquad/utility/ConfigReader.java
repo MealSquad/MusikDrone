@@ -1,4 +1,4 @@
-package utility;
+package com.github.mealsquad.utility;
 
 import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
