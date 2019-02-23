@@ -1,10 +1,14 @@
 package com.github.mealsquad;
 
+import com.github.mealsquad.listeners.PingListener;
+import com.github.mealsquad.listeners.ReadyListener;
 import com.github.mealsquad.utility.ConfigReader;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.DiscordApiBuilder;
+
+import javax.security.auth.login.LoginException;
 
 public class Bot {
 
@@ -13,14 +17,17 @@ public class Bot {
     private void start() {
         log.info("Starting MusikDrone");
 
-        DiscordApi api = new DiscordApiBuilder().setToken(ConfigReader.readProperties("token")).login().join();
-
-        // Add a listener which answers with "Pong!" if someone writes "!ping"
-        api.addMessageCreateListener(event -> {
-            if (event.getMessageContent().equalsIgnoreCase("!ping")) {
-                event.getChannel().sendMessage("Pong!");
-            }
-        });
+        try {
+            JDA jda = new JDABuilder(ConfigReader.readProperties("token"))
+                    .addEventListener(new ReadyListener(), new PingListener())
+                    .build();
+            
+            jda.awaitReady();
+        } catch (LoginException le) {
+            log.fatal("Failure to login");
+        } catch (InterruptedException ie){
+            log.info("Interrupted Exception");
+        }
     }
 
     public static void main(String[] args) {
