@@ -8,7 +8,7 @@ public class PingListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().equals("!ping")) {
+        if (event.getMessage().getContentRaw().equals(";ping")) {
             event.getTextChannel().sendMessage("Pong!").queue();
         }
     }
