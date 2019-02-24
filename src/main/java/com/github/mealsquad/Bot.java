@@ -1,9 +1,11 @@
 package com.github.mealsquad;
 
+import com.github.mealsquad.listeners.CommandListener;
+import com.github.mealsquad.listeners.HelpListener;
 import com.github.mealsquad.listeners.PingListener;
 import com.github.mealsquad.listeners.ReadyListener;
 import com.github.mealsquad.utility.ConfigReader;
-import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,22 +18,28 @@ public class Bot {
 
     private void start() {
         log.info("Starting MusikDrone");
-
         try {
-            JDA jda = new JDABuilder(ConfigReader.readProperties("token"))
-                    .addEventListener(new ReadyListener(), new PingListener())
-                    .build();
-            
-            jda.awaitReady();
+            new JDABuilder(AccountType.BOT)
+                    .setToken(ConfigReader.readProperties("token"))
+                    .addEventListener(
+                            new ReadyListener(),
+                            new PingListener(),
+                            new HelpListener(),
+                            new CommandListener())
+                    .build()
+                    .awaitReady();
         } catch (LoginException le) {
-            log.fatal("Failure to login");
-        } catch (InterruptedException ie){
-            log.info("Interrupted Exception");
+            log.fatal("JDA failed to login - check token validity");
+            System.exit(1);
+        } catch (InterruptedException ie) {
+            log.fatal("JDA was interrupted while waiting");
+            System.exit(1);
         }
     }
 
-    public static void main(String[] args) {
-        Bot me = new Bot();
-        me.start();
+    public static void main(String[] args){
+        new Bot().start();
     }
+
+
 }
